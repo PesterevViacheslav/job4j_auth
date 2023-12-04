@@ -5,3 +5,4 @@ CREATE TABLE IF NOT EXISTS person (
    password varchar(2000) NOT NULL,
    CONSTRAINT pk_person PRIMARY KEY(id)
 );
+CREATE UNIQUE INDEX uq_person$login ON person(login);
