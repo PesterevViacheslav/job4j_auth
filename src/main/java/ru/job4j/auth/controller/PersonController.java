@@ -10,6 +10,7 @@ import ru.job4j.auth.repository.PersonRepository;
 import ru.job4j.auth.service.PersonService;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class PersonController - Контроллер работы с персонами. Решение задач уровня Middle.
@@ -41,10 +42,10 @@ public class PersonController {
 
     @PostMapping("/")
     public ResponseEntity<Person> create(@RequestBody Person person) {
-        Person personCreated = this.persons.create(person);
+        Optional<Person> personCreated = this.persons.create(person);
         return new ResponseEntity<Person>(
-                personCreated,
-                personCreated == null ? HttpStatus.CONFLICT : HttpStatus.CREATED
+                personCreated.isPresent() ? personCreated.get() : null,
+                personCreated.isEmpty() ? HttpStatus.CONFLICT : HttpStatus.CREATED
         );
     }
 

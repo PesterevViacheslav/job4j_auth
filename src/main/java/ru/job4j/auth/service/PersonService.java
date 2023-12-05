@@ -1,7 +1,6 @@
 package ru.job4j.auth.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.repository.PersonRepository;
@@ -31,8 +30,12 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Person create(Person person) {
-        return personRepository.findByLogin(person.getLogin()).isPresent() ? null : personRepository.save(person);
+    public Optional<Person> create(Person person) {
+        try {
+            return Optional.of(personRepository.save(person));
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return Optional.empty();
+        }
     }
 
     public boolean delete(Person person) {
