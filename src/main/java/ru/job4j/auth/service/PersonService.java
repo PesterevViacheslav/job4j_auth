@@ -1,6 +1,8 @@
 package ru.job4j.auth.service;
 
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.repository.PersonRepository;
@@ -22,6 +24,8 @@ import java.util.Optional;
 public class PersonService {
     private final PersonRepository personRepository;
 
+    private static final Logger LOG = LogManager.getLogger(PersonService.class.getName());
+
     public Optional<Person> findById(int id) {
         return personRepository.findById(id);
     }
@@ -33,9 +37,10 @@ public class PersonService {
     public Optional<Person> create(Person person) {
         try {
             return Optional.of(personRepository.save(person));
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            return Optional.empty();
+        } catch (Exception e) {
+            LOG.error("PersonService.create", e);
         }
+        return Optional.empty();
     }
 
     public boolean delete(Person person) {
