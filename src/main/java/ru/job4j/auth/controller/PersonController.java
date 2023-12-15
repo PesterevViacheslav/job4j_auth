@@ -6,9 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.model.Person;
-import ru.job4j.auth.repository.PersonRepository;
 import ru.job4j.auth.service.PersonService;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +24,9 @@ import java.util.Optional;
 @RequestMapping("/person")
 public class PersonController {
     private final PersonService persons;
+    private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public List<Person> findAll() {
         return this.persons.findAll();
     }
@@ -59,5 +59,11 @@ public class PersonController {
         Person person = new Person();
         person.setId(id);
         return new ResponseEntity<>(persons.delete(person) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/sign-up")
+    public void signUp(@RequestBody Person person) {
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
+        persons.create(person);
     }
 }
