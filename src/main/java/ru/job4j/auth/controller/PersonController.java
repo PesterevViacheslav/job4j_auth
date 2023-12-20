@@ -40,8 +40,9 @@ public class PersonController {
         );
     }
 
-    @PostMapping("/")
+    @PostMapping("/sign-up")
     public ResponseEntity<Person> create(@RequestBody Person person) {
+        person.setPassword(passwordEncoder.encode(person.getPassword()));
         Optional<Person> personCreated = this.persons.create(person);
         return new ResponseEntity<Person>(
                 personCreated.isPresent() ? personCreated.get() : null,
@@ -59,11 +60,5 @@ public class PersonController {
         Person person = new Person();
         person.setId(id);
         return new ResponseEntity<>(persons.delete(person) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
-    }
-
-    @PostMapping("/sign-up")
-    public void signUp(@RequestBody Person person) {
-        person.setPassword(passwordEncoder.encode(person.getPassword()));
-        persons.create(person);
     }
 }
