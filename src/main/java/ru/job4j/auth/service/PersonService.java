@@ -35,12 +35,7 @@ public class PersonService {
     }
 
     public Optional<Person> create(Person person) {
-        try {
-            return Optional.of(personRepository.save(person));
-        } catch (Exception e) {
-            LOG.error("PersonService.create", e);
-        }
-        return Optional.empty();
+        return Optional.of(personRepository.save(person));
     }
 
     public boolean delete(Person person) {
