@@ -5,13 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.service.PersonService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -39,8 +39,12 @@ public class PersonController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/all")
-    public List<Person> findAll() {
-        return this.persons.findAll();
+    public ResponseEntity<List<Person>> findAll() {
+        var personList = this.persons.findAll();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header("findAllHeaderName", "job4j_auth")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(personList);
     }
 
     @GetMapping("/{id}")
