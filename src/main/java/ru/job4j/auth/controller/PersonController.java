@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.job4j.auth.dto.PersonDTO;
 import ru.job4j.auth.model.Person;
 import ru.job4j.auth.service.PersonService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -96,5 +97,13 @@ public class PersonController {
             put("type", exception.getClass());
         }}));
         log.error(exception.getLocalizedMessage(), exception);
+    }
+
+    @PatchMapping("/patch/{id}")
+    public ResponseEntity<Person> patchDTO(@RequestBody PersonDTO personDTO, @PathVariable int id) {
+        var person = persons.findById(id).orElseThrow(() ->
+                            new ResponseStatusException(HttpStatus.NOT_FOUND));
+        person.setPassword(passwordEncoder.encode(personDTO.getPassword()));
+        return new ResponseEntity<>(persons.update(person) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }
