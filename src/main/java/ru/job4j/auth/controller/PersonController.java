@@ -15,6 +15,7 @@ import ru.job4j.auth.service.PersonService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -56,13 +57,7 @@ public class PersonController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Person> create(@RequestBody Person person) {
-        if (person.getLogin() == null || person.getPassword() == null) {
-            throw new NullPointerException("Login and password mustn't be empty");
-        }
-        if (person.getPassword().length() < 6) {
-            throw new IllegalArgumentException("Invalid username or password");
-        }
+    public ResponseEntity<Person> create(@RequestBody @Valid Person person) {
         person.setPassword(passwordEncoder.encode(person.getPassword()));
         Optional<Person> personCreated = this.persons.create(person);
         return ResponseEntity
@@ -71,10 +66,7 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Person> update(@RequestBody Person person) {
-        if (person.getLogin() == null || person.getPassword() == null) {
-            throw new NullPointerException("Login and password mustn't be empty");
-        }
+    public ResponseEntity<Person> update(@RequestBody @Valid Person person) {
         return ResponseEntity
                 .status(persons.update(person) ? HttpStatus.OK : HttpStatus.NOT_FOUND)
                 .body(person);
@@ -100,7 +92,7 @@ public class PersonController {
     }
 
     @PatchMapping("/patch/{id}")
-    public ResponseEntity<Person> patchDTO(@RequestBody PersonDTO personDTO, @PathVariable int id) {
+    public ResponseEntity<Person> patchDTO(@RequestBody @Valid PersonDTO personDTO, @PathVariable int id) {
         var person = persons.findById(id).orElseThrow(() ->
                             new ResponseStatusException(HttpStatus.NOT_FOUND));
         person.setPassword(passwordEncoder.encode(personDTO.getPassword()));

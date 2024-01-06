@@ -3,6 +3,9 @@ package ru.job4j.auth.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Class Person - Персона. Решение задач уровня Middle.
@@ -21,6 +24,10 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+    @NotNull(message = "Fill the login")
+    @Size(min = 6, max = 20, message = "Login should be between 6 and 20 characters")
     private String login;
+    @NotNull(message = "Fill the password")
+    @Min(value = 6, message = "Password should be more than 6 characters")
     private String password;
 }
