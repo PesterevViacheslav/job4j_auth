@@ -28,6 +28,6 @@ public class Person {
     @Size(min = 6, max = 20, message = "Login should be between 6 and 20 characters")
     private String login;
     @NotNull(message = "Fill the password")
-    @Min(value = 6, message = "Password should be more than 6 characters")
+    @Size(min = 6, max = 64, message = "Password should be between 6 and 64 characters.")
     private String password;
 }
